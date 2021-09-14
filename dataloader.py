@@ -22,10 +22,7 @@ test_transform = transforms.Compose([
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 ])
 
-print(train_transform, test_transform)
-
 # change train set and test set
-
 train_set = torchvision.datasets.STL10(
     root='./data',
     split='test',
@@ -65,16 +62,17 @@ class CustomDataset(Dataset):
     def __len__(self):
         return len(self.y)
 
-    def __getitem__(self, item):
+    def __getitem__(self, idx):
         if self.transform:
-            image = self.transform(self.X)
-            label = self.y
+            print(self.X[idx].shape)
+            image = self.transform(self.X[idx])
+            label = self.y[idx]
             return image, label
         else:
-            return self.X, self.y
+            return self.X[idx], self.y[idx]
 
-val_set = CustomDataset(X_val, y_val, transform=test_transform)
-test_set = CustomDataset(X_test, y_test, transform=test_transform)
+val_set = CustomDataset(X_val, y_val)
+test_set = CustomDataset(X_test, y_test)
 
 val_loader = DataLoader(val_set, batch_size=100, shuffle=True, num_workers=0)
 test_loader = DataLoader(test_set, batch_size=100, shuffle=True, num_workers=0)
