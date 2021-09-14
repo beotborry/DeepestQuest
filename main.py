@@ -53,11 +53,13 @@ def main():
     pytorch_total_params = sum(p.numel() for p in model.parameters())
     print(pytorch_total_params)
 
+    gpu = 1 if torch.cuda.is_available() else -1
+
     optimizer = Adam(model.parameters(), lr=model.lr)
     criterion = nn.CrossEntropyLoss()
 
     fit(model, epoch=model.epoch, optimizer=optimizer, criterion=criterion, train_loader=train_loader,
-        val_loader=val_loader)
+        val_loader=val_loader, gpu=gpu)
 
     evaluate(model, test_loader)
 

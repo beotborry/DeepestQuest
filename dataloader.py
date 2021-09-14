@@ -22,6 +22,7 @@ test_transform = transforms.Compose([
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 ])
 
+print(train_transform, test_transform)
 
 # change train set and test set
 
@@ -56,9 +57,9 @@ X_val, X_test, y_val, y_test = train_test_split(
 
 class CustomDataset(Dataset):
     def __init__(self, X, y, transform=None, target_transform=None):
-        self.X = X,
-        self.y = y,
-        self.transform = transform,
+        self.X = X
+        self.y = y
+        self.transform = transform
         self.target_transform = target_transform
 
     def __len__(self):
