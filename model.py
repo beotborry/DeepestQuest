@@ -37,10 +37,11 @@ class MyModel(nn.Module):
             nn.BatchNorm2d(512)
         )
 
-        self.dropout = nn.Dropout(0.4)
+        self.dropout_2 = nn.Dropout(0.2)
+        self.dropout_3 = nn.Dropout(0.3)
+        self.dropout_4 = nn.Dropout(0.4)
 
-        self.fc1 = nn.Linear(4608, 1000)
-        self.fc2 = nn.Linear(1000, 10)
+        self.fc1 = nn.Linear(18432, 10)
 
     def forward(self, inputs):
         # 3 -> 64
@@ -57,6 +58,7 @@ class MyModel(nn.Module):
         x = self.bn_64(x)
         x = x + _tmp
         x = self.relu(x)
+        x = self.dropout_2(x)
 
         # 64 -> 128
         _tmp = x
@@ -68,37 +70,23 @@ class MyModel(nn.Module):
         _tmp = self.downsample64_128(_tmp)
         x = x + _tmp
         x = self.relu(x)
+        x = self.dropout_3(x)
 
-        print(x.shape)
-        # 128 -> 256
+        # 128 -> 128
         _tmp = x
-        x = self.conv128_256(x)
-        x = self.bn_256(x)
+        x = self.conv128_128(x)
+        x = self.bn_128(x)
         x = self.relu(x)
-        x = self.conv256_256(x)
-        x = self.bn_256(x)
-        _tmp = self.downsample128_256(_tmp)
-        x = x + _tmp
+        x = self.conv128_128(x)
+        x = self.bn_128(x)
+        _tmp = x + _tmp
         x = self.relu(x)
-
-        # 256 -> 512
-        _tmp = x
-        x = self.conv256_512(x)
-        x = self.bn_512(x)
-        x = self.relu(x)
-        x = self.conv512_512(x)
-        x = self.bn_512(x)
-        _tmp = self.downsample256_512(_tmp)
-        x = x + _tmp
-        x = self.relu(x)
+        x = self.dropout_4(x)
 
         x = F.avg_pool2d(x, 4)
 
         x = x.reshape(x.size(0), -1)
 
-        x = self.dropout(x)
-        print(x.shape)
         x = self.fc1(x)
-        x = self.fc2(x)
 
         return x
